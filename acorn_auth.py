@@ -31,7 +31,7 @@ def perform_SSO(username, password):
 
   if "Authentication Failed" in login_redirect_to_loggedin.text:
     print("ERROR: Are your credentials correct?")
-    return
+    exit()
 
   form_inputs = extract_form_data(login_redirect_to_loggedin.text)
   loggedin_redirect_to_SSO_idp = session.post(URLS['relay'], data=form_inputs)
