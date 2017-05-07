@@ -3,7 +3,6 @@ import base64
 import urllib
 import requests
 import getpass
-import logging
 
 USERNAME = ''
 PASSWORD = ''
