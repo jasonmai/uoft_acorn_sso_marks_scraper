@@ -16,6 +16,6 @@ This is a simple script/tool that simulates SSO (single sign-on) login, then scr
 ## Usage
  - Run script in terminal (preferred) through: `python acorn_marks.py`.
    - You may run the script from your IDE. However, your password may not be masked when inputting.
- - Enter your ACORN credentials
+ - Enter your ACORN credentials.
    - You may hardcode your credentials at the top of the script (though not recommended) - global variables USERNAME and PASSWORD. You won't be prompted to input credentials after this.
- - Marks and GPA information will populate the terminal
+ - Marks and GPA information will populate the terminal.
