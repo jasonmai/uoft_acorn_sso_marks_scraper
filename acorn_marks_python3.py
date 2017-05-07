@@ -5,20 +5,6 @@ import requests
 import getpass
 import logging
 
-#try:
-#    import http.client as http_client
-#except ImportError:
-#    import httplib as http_client
-#http_client.HTTPConnection.debuglevel = 1
-#
-#logging.basicConfig()
-#logging.getLogger().setLevel(logging.DEBUG)
-#requests_log = logging.getLogger("requests.packages.urllib3")
-#requests_log.setLevel(logging.DEBUG)
-#requests_log.propagate = True
-
-
-
 USERNAME = ''
 PASSWORD = ''
 
@@ -51,25 +37,8 @@ def perform_SSO(username, password):
   form_inputs = extract_form_data(login_redirect_to_loggedin.text)
   loggedin_redirect_to_SSO_idp = session.post(URLS['relay'], data=form_inputs)
 
-#  redirect_location = loggedin_redirect_to_SSO_idp.headers['Location']
-#  loggedin_redirect_to_SSO_idp = session.get(redirect_location, data=form_inputs, allow_redirects=False)
-#  print('\n\n#################################################################################################\n\n')
-#  print(loggedin_redirect_to_SSO_idp.text)
-#  input("continue")
-#  if loggedin_redirect_to_SSO_idp.history:
-#    print("Request was redirected")
-#    for resp in loggedin_redirect_to_SSO_idp.history:
-#        print(resp.status_code, resp.url)
-#    print("Final destination:")
-#    print(loggedin_redirect_to_SSO_idp.status_code, loggedin_redirect_to_SSO_idp.url)
-#  else:
-#    print("Request was not redirected")
-#  input("continue")
-
   form_inputs = extract_form_data(loggedin_redirect_to_SSO_idp.text)
   SSO_idp_redirect_to_acorn = session.post(URLS['acorn_spACS'], data=form_inputs)
-  #print(loggedin_redirect_to_SSO_idp.text)
-  #input("continue")
 
   return session
 
