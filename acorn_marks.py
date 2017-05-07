@@ -70,9 +70,7 @@ def extract_form_data(raw_markup):
   return form_data
 
 def extract_b64_form_data(b64_str):
-  form_data = base64.b64decode(b64_str)
-  if not PYTHON2:
-    form_data = form_data.decode('utf-8')
+  form_data = (base64.b64decode(b64_str)).decode('utf-8')
   raw_data = [key_val for key_val in form_data.split('&')]
   parsed_data = {}
   for data in raw_data:
@@ -96,7 +94,7 @@ def logout(session):
   return 'You have logged out of ACORN' in response.text
 
 if __name__ == '__main__':
-  if USERNAME == '' or PASSWORD == '':
+  if not USERNAME or not PASSWORD:
     if PYTHON2:
       input_method = raw_input
     else:
