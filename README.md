@@ -11,8 +11,8 @@ This is a simple script/tool that simulates SSO (single sign-on) login, then scr
 
 ## Installation
  - `pip install requests`
- - Download the correct version of the script, corresponding to your Python version (2.7/3).
- 
+ - Download the Python script `acorn_marks.py`.
+
 ## Usage
  - Run script in terminal (preferred) through: `python acorn_marks.py`.
    - You may run the script from your IDE. However, your password may not be masked when inputting.
