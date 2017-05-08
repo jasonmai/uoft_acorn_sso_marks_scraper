@@ -45,6 +45,10 @@ def perform_SSO(username, password):
   form_inputs = extract_form_data(loggedin_redirect_to_SSO_idp.text)
   SSO_idp_redirect_to_acorn = session.post(URLS['acorn_spACS'], data=form_inputs)
 
+  if "ACORN Unavailable" in SSO_idp_redirect_to_acorn.text:
+    print("ERROR: ACORN is unavailable.")
+    exit()
+
   return session
 
 def prepare_login_form_data(login_markup, user, pw):
