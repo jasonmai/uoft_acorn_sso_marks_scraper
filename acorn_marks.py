@@ -37,7 +37,7 @@ def perform_SSO(username, password):
 
   if "Authentication Failed" in login_redirect_to_loggedin.text:
     print("ERROR: Are your credentials correct?")
-    exit()
+    exit(1)
 
   form_inputs = extract_form_data(login_redirect_to_loggedin.text)
   loggedin_redirect_to_SSO_idp = session.post(URLS['relay'], data=form_inputs)
@@ -47,7 +47,7 @@ def perform_SSO(username, password):
 
   if "ACORN Unavailable" in SSO_idp_redirect_to_acorn.text:
     print("ERROR: ACORN is unavailable.")
-    exit()
+    exit(1)
 
   return session
 
@@ -108,8 +108,13 @@ if __name__ == '__main__':
 
   print('Processing...\n')
 
-  authed_session = perform_SSO(USERNAME, PASSWORD)
-  marks, gpas = retrieve_complete_academic_history(authed_session)
+  try:
+    authed_session = perform_SSO(USERNAME, PASSWORD)
+    marks, gpas = retrieve_complete_academic_history(authed_session)
+  except requests.exceptions.RequestException as exception:
+    print(exception)
+    print('\nAre you connected to the internet?')
+    exit(1)
 
   for semester in marks:
     print(semester)
