@@ -15,12 +15,9 @@ PASSWORD = ''
 
 URLS = {
  'acorn': 'http://acorn.utoronto.ca/',
- 'weblogin': 'https://weblogin.utoronto.ca/',
- 'relay': 'https://idp.utorauth.utoronto.ca/PubCookie.reply',
  'acorn_spACS': 'https://acorn.utoronto.ca/spACS',
- 'complete_academic_history': 'https://acorn.utoronto.ca/sws/' +
-                              'transcript/academic/main.do' +
-                              '?main.dispatch&mode=complete',
+ 'complete_academic_history': 'https://acorn.utoronto.ca/sws/rest/' +
+                              'history/academic/complete',
  'logout': 'https://acorn.utoronto.ca/sws/auth/logout.do?logout.dispatch'
 }
 
@@ -30,9 +27,12 @@ def perform_SSO(username, password):
 
   acorn_redirect_to_auth = session.get(URLS['acorn'])
 
+  sso_url = acorn_redirect_to_auth.url
+
   payload, headers = prepare_login_form_data(acorn_redirect_to_auth.text,
                                              username, password)
-  login_redirect_to_loggedin = session.post(URLS['weblogin'],
+
+  login_redirect_to_loggedin = session.post(sso_url,
                                             headers=headers, data=payload)
 
   if "Authentication Failed" in login_redirect_to_loggedin.text:
@@ -40,10 +40,8 @@ def perform_SSO(username, password):
     exit(1)
 
   form_inputs = extract_form_data(login_redirect_to_loggedin.text)
-  loggedin_redirect_to_SSO_idp = session.post(URLS['relay'], data=form_inputs)
-
-  form_inputs = extract_form_data(loggedin_redirect_to_SSO_idp.text)
-  SSO_idp_redirect_to_acorn = session.post(URLS['acorn_spACS'], data=form_inputs)
+  SSO_idp_redirect_to_acorn = session.post(URLS['acorn_spACS'],
+                                              data=form_inputs)
 
   if "ACORN Unavailable" in SSO_idp_redirect_to_acorn.text:
     print("ERROR: ACORN is unavailable.")
@@ -53,12 +51,11 @@ def perform_SSO(username, password):
 
 def prepare_login_form_data(login_markup, user, pw):
   form_data = extract_form_data(login_markup)
-  form_inputs = extract_b64_form_data(form_data['pubcookie_g_req'])
-  form_inputs['user'] = user
-  form_inputs['pass'] = pw
-  form_inputs['login'] = ''
-  form_inputs['relay_url'] = URLS['relay']
-  form_inputs['reply'] = '1'
+  form_inputs = {}
+  form_inputs.update(form_data)
+  form_inputs['j_username'] = user
+  form_inputs['j_password'] = pw
+  form_inputs['_eventId_proceed'] = ''
   payload = urllib.urlencode(form_inputs)
   headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
   return payload, headers
